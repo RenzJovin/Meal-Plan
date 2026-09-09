@@ -1,0 +1,802 @@
+<title>Milele</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FCFBF8;
+    --surface:#FFFFFF;
+    --surface-alt:#F3EEE2;
+    --ink:#2B2118;
+    --ink-soft:#7C6F5C;
+    --accent:#2F5233;
+    --accent-ink:#173420;
+    --accent-soft:#E7EEE1;
+    --gold:#C1613A;
+    --gold-soft:#F5E3D6;
+    --line:#E8DFCE;
+    --shadow: 0 4px 14px rgba(60,45,24,0.09);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1B1712;
+      --surface:#241F18;
+      --surface-alt:#2C261C;
+      --ink:#F4EDE0;
+      --ink-soft:#B9AB93;
+      --accent:#6FBF8B;
+      --accent-ink:#E1F6E9;
+      --accent-soft:#26362A;
+      --gold:#E2905F;
+      --gold-soft:#3B2A1F;
+      --line:#3B3427;
+      --shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1B1712;
+    --surface:#241F18;
+    --surface-alt:#2C261C;
+    --ink:#F4EDE0;
+    --ink-soft:#B9AB93;
+    --accent:#6FBF8B;
+    --accent-ink:#E1F6E9;
+    --accent-soft:#26362A;
+    --gold:#E2905F;
+    --gold-soft:#3B2A1F;
+    --line:#3B3427;
+    --shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+
+  header{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:20px;
+  }
+  .eyebrow{
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  h1{
+    font-family:"Fredoka", ui-rounded, Georgia, sans-serif;
+    font-weight:600;
+    font-size:clamp(28px,5vw,38px);
+    line-height:1.1;
+    margin:0;
+    text-wrap:balance;
+  }
+  .client-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+    margin-top:10px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .client-row span b{
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  .banner{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:var(--accent-soft);
+    border-left:4px solid var(--gold);
+    border-radius:18px;
+    padding:18px 20px;
+    margin:22px 0 24px;
+  }
+  .banner svg{flex:none; margin-top:2px; color:var(--gold);}
+  .banner-title{
+    font-weight:600;
+    font-size:14.5px;
+    margin-bottom:4px;
+  }
+  .banner-body{
+    font-size:14px;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .banner-body b{font-weight:600;}
+  .banner-empty{color:var(--ink-soft); font-style:italic;}
+
+  .main-tabs{
+    display:flex;
+    gap:4px;
+    background:var(--surface-alt);
+    border-radius:16px;
+    padding:5px;
+    margin:22px 0;
+  }
+  .main-tabs button{
+    flex:1;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    padding:10px 10px;
+    border-radius:12px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .main-tabs button.active{
+    background:var(--surface);
+    color:var(--ink);
+    box-shadow:var(--shadow);
+  }
+  .section{display:none;}
+  .section.active{display:block;}
+
+  .shop-intro{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    line-height:1.55;
+  }
+  .shop-group{
+    margin-bottom:22px;
+  }
+  .shop-group h3{
+    font-family:"Fredoka", ui-rounded, Georgia, sans-serif;
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 10px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .shop-group h3 .cat-icon{
+    width:30px;height:30px;
+    flex:none;
+    border-radius:50%;
+    background:var(--accent-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .shop-group h3 .cat-icon svg{width:18px;height:18px;}
+  .shop-list{
+    display:flex;
+    flex-direction:column;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:2px 16px;
+    box-shadow:var(--shadow);
+  }
+  .shop-row{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14.5px;
+  }
+  .shop-row:last-child{border-bottom:none;}
+  .shop-row label{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex:1;
+    cursor:pointer;
+  }
+  .shop-row input[type="checkbox"]{
+    accent-color:var(--accent);
+    width:16px;height:16px;
+    flex:none;
+    margin-top:2px;
+  }
+  .shop-row .qty{
+    color:var(--ink-soft);
+    font-size:13px;
+    white-space:nowrap;
+    margin-left:auto;
+    padding-left:12px;
+  }
+  .shop-row.checked label{
+    color:var(--ink-soft);
+    text-decoration:line-through;
+  }
+  .shop-row.checked .qty{text-decoration:line-through;}
+
+  .upload-zone{
+    border:1.5px dashed var(--line);
+    border-radius:20px;
+    padding:36px 20px;
+    text-align:center;
+    background:var(--surface);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .upload-zone:hover, .upload-zone.drag{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .upload-zone svg{color:var(--accent); margin-bottom:10px;}
+  .upload-zone .up-title{
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:4px;
+  }
+  .upload-zone .up-sub{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .upload-status{
+    display:none;
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:10px;
+    background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    font-size:14px;
+    line-height:1.5;
+  }
+  .upload-status.show{display:block;}
+  .upload-status b{font-weight:600;}
+  .upload-note{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+
+  nav.days{
+    position:sticky;
+    top:0;
+    z-index:5;
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding:10px 0;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    margin-bottom:22px;
+    scrollbar-width:none;
+  }
+  nav.days::-webkit-scrollbar{display:none;}
+  nav.days button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex:none;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    padding:8px 15px 8px 10px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  nav.days button .day-icon{
+    width:20px;height:20px;
+    flex:none;
+  }
+  nav.days button.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  nav.days button .today-dot{
+    display:inline-block;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    margin-left:6px;
+    vertical-align:middle;
+  }
+  nav.days button.active .today-dot{background:#fff;}
+
+  .day-panel{display:none;}
+  .day-panel.active{display:block;}
+
+  #day-panels{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .meal{
+    display:grid;
+    grid-template-columns:72px 1fr;
+    gap:16px;
+    padding:20px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+  }
+  .meal-time{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent-ink);
+    background:var(--accent-soft);
+    border-radius:999px;
+    padding:5px 0;
+    text-align:center;
+    height:fit-content;
+  }
+  .meal-name{
+    font-family:"Fredoka", ui-rounded, Georgia, sans-serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .meal-name .meal-icon{width:24px;height:24px;flex:none;}
+  .course{
+    margin-bottom:10px;
+  }
+  .course:last-child{margin-bottom:0;}
+  .course-label{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .item-line{
+    font-size:15px;
+    line-height:1.55;
+  }
+  .item-line + .item-line{margin-top:2px;}
+  .freezer-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    font-size:11px;
+    font-weight:600;
+    color:var(--gold);
+    background:var(--gold-soft);
+    border-radius:5px;
+    padding:1px 6px 1px 5px;
+    margin-left:6px;
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  .freezer-tag svg{width:10px;height:10px;}
+  .meal-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-top:8px;
+  }
+  details.alt{
+    margin-top:10px;
+  }
+  details.alt summary{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    font-weight:500;
+  }
+  details.alt summary:hover{color:var(--accent);}
+  details.alt .alt-body{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    line-height:1.6;
+  }
+
+  footer{
+    margin-top:40px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Piano alimentare &middot; settimana tipo &middot; porzioni per 2</div>
+    <h1>Milele</h1>
+    <div class="client-row">
+      <span>Porzioni raddoppiate rispetto al piano originale, per due persone</span>
+    </div>
+  </header>
+
+  <nav class="main-tabs" id="main-tabs">
+    <button data-section="menu" class="active">Menu</button>
+    <button data-section="shopping">Lista della spesa</button>
+    <button data-section="upload">Aggiorna piano</button>
+  </nav>
+
+  <div class="section active" id="section-menu">
+    <div class="banner">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="4.5" y1="6" x2="19.5" y2="18"></line><line x1="19.5" y1="6" x2="4.5" y2="18"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+      <div>
+        <div class="banner-title" id="banner-title">Stasera scongela per domani</div>
+        <div class="banner-body" id="banner-body"></div>
+      </div>
+    </div>
+
+    <nav class="days" id="day-nav"></nav>
+    <div id="day-panels"></div>
+  </div>
+
+  <div class="section" id="section-shopping">
+    <div class="shop-intro">Dosi già calcolate per 2 persone, sommando tutti e 7 i giorni del menu fisso (non includono le "altre opzioni" alternative). Spunta man mano che riempi il carrello — le spunte si azzerano quando ricarichi la pagina.</div>
+    <div id="shopping-groups"></div>
+  </div>
+
+  <div class="section" id="section-upload">
+    <div class="upload-zone" id="upload-zone" tabindex="0">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      <div class="up-title">Trascina qui il nuovo piano alimentare</div>
+      <div class="up-sub">oppure clicca per scegliere un file PDF dal tuo dispositivo</div>
+      <input type="file" id="upload-input" accept="application/pdf" style="display:none;">
+    </div>
+    <div class="upload-status" id="upload-status"></div>
+    <div class="upload-note">Questa pagina è statica e non può leggere da sola un nuovo PDF: dopo averlo caricato qui, manda lo stesso file a Milele in chat (Claude) — rigenererà menu settimanale, promemoria di scongelamento e lista della spesa, e ti passerà la pagina aggiornata da ripubblicare.</div>
+  </div>
+
+  <footer>
+    Piano basato sul documento fornito dal nutrizionista: ogni pasto elenca le alternative previste, qui è fissata una combinazione a settimana così da non doverci pensare — apri "altre opzioni" per cambiare una voce. Gli alimenti proteici segnati <span class="freezer-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="4.5" y1="6" x2="19.5" y2="18"></line><line x1="19.5" y1="6" x2="4.5" y2="18"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>da freezer</span> sono quelli tipicamente congelati: se li tieni in freezer, scongelali la sera prima. Ogni sera alle 21:00 arriva anche una notifica automatica con il promemoria del giorno dopo.
+  </footer>
+</div>
+
+<script>
+  const FZ = ' <span class="freezer-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="4.5" y1="6" x2="19.5" y2="18"></line><line x1="19.5" y1="6" x2="4.5" y2="18"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>da freezer</span>';
+
+  // ---- Piccola libreria di icone "cibo", disegnate a mano in stile piatto e arrotondato ----
+  const ICONS = {
+    fruit: (c='#C1613A', leaf='#2F5233') => `<svg viewBox="0 0 28 28"><circle cx="14" cy="16.5" r="9" fill="${c}"/><path d="M14 7.5c0-2 1.4-3.2 3-3.4" stroke="${leaf}" stroke-width="2" stroke-linecap="round" fill="none"/><ellipse cx="17.6" cy="4.6" rx="2.6" ry="1.5" fill="${leaf}" transform="rotate(-30 17.6 4.6)"/></svg>`,
+    fish: (c='#4F7FA6') => `<svg viewBox="0 0 28 28"><path d="M3 14c4.5-6 15-6 19 0-4 6-14.5 6-19 0z" fill="${c}"/><path d="M22 14l4.5-3.4v6.8L22 14z" fill="${c}"/><circle cx="8.6" cy="12.3" r="1.15" fill="#fff"/></svg>`,
+    poultry: (c='#C98A2C') => `<svg viewBox="0 0 28 28"><path d="M9.5 6.2c4-2 8.6 1 8.6 5.8 0 2.8-1.8 4.7-3.8 5.7l-4 6.1-2.9-1.9 3.9-6c-2.8-1-3.8-2.9-3.8-5.8 0-1.9.9-3 2-3.9z" fill="${c}"/><circle cx="8.1" cy="21.6" r="2.3" fill="${c}"/></svg>`,
+    redmeat: (c='#8B3A2B') => `<svg viewBox="0 0 28 28"><path d="M5.5 17.5c-1.8-4 .3-8.7 5-10.5 5.8-2.2 11.6.8 12.7 5.6 1 4.2-1.8 7.8-6.6 8.9-4.8 1.1-9.1-.4-11.1-4z" fill="${c}"/><path d="M9 12l2.6 4.6M12.8 10l2.8 5.4M16.6 9l2.6 5.2" stroke="rgba(0,0,0,.2)" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+    egg: (c='#FFF7E6', o='#E8DFCE') => `<svg viewBox="0 0 28 28"><ellipse cx="14" cy="15" rx="7" ry="9.2" fill="${c}" stroke="${o}" stroke-width="1.4"/></svg>`,
+    bread: (c='#C98A2C') => `<svg viewBox="0 0 28 28"><path d="M4 17.5c0-6.3 4.2-10.7 10-10.7s10 4.4 10 10.7c0 3-2.2 4-10 4s-10-1-10-4z" fill="${c}"/><path d="M10 10.3l2 6M14 8.7l2 7M18 10.3l2 6" stroke="rgba(0,0,0,.16)" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+    veg: (c='#4F7A4A', stem='#8A6A45') => `<svg viewBox="0 0 28 28"><rect x="12.6" y="17.5" width="2.8" height="6.6" rx="1.3" fill="${stem}"/><circle cx="10.2" cy="12.2" r="4.1" fill="${c}"/><circle cx="15.8" cy="10.6" r="4.5" fill="${c}"/><circle cx="18.8" cy="14.2" r="3.5" fill="${c}"/></svg>`,
+    dairy: (c='#F3EEE2', line='#C1613A') => `<svg viewBox="0 0 28 28"><path d="M10.3 4.2h7.4l1 3v14.3a2 2 0 0 1-2 2h-5.4a2 2 0 0 1-2-2V7.2l1-3z" fill="${c}" stroke="#E8DFCE" stroke-width="1"/><path d="M9.6 11.6h8.8" stroke="${line}" stroke-width="1.6"/></svg>`,
+    legumi: (c='#4F7A4A') => `<svg viewBox="0 0 28 28"><path d="M6 16.3c0-6 4-11 9-11s9 3.2 9 8.2-4 9.3-9 9.3-9-2-9-6.5z" fill="${c}" opacity=".22"/><circle cx="11" cy="12.3" r="2" fill="${c}"/><circle cx="15.6" cy="9.7" r="2" fill="${c}"/><circle cx="18.1" cy="14.7" r="2" fill="${c}"/></svg>`,
+    oil: (c='#C1613A') => `<svg viewBox="0 0 28 28"><path d="M14 3.8c4.4 6.4 7.4 10.6 7.4 14.6a7.4 7.4 0 1 1-14.8 0c0-4 3-8.2 7.4-14.6z" fill="${c}"/><ellipse cx="11.8" cy="16.6" rx="1.5" ry="2.1" fill="rgba(255,255,255,.35)"/></svg>`,
+    squid: (c='#8B7FA8') => `<svg viewBox="0 0 28 28"><path d="M3 13.5c4.5-6 15-6 19 0-4 6-14.5 6-19 0z" fill="${c}"/><path d="M22.5 13.5l4-3v6l-4-3z" fill="${c}"/><circle cx="8.6" cy="11.8" r="1.1" fill="#fff"/></svg>`
+  };
+  const DAY_ICON = ['fish','poultry','redmeat','redmeat','squid','egg','legumi']; // icona legata al secondo di cena di ogni giorno
+
+  const days = [
+    {
+      name:"Lunedì",
+      colazione:{time:"07:30", items:["250 g latte di vacca parzialmente scremato UHT","4 uova di gallina intere (200 g)","80 g pane integrale","30 g mandorle","2 pere grandi, senza buccia (400 g)"], alt:"Altre opzioni colazione dal piano (dosi raddoppiate per 2): latte di soia 370 g · bresaola 14 fette (1–2 volte/sett.) · proteine in polvere 60 g · albume 360 g · yogurt greco 0% 340 g · gallette di riso, fette biscottate o fiocchi d'avena al posto del pane · burro di arachidi al posto delle mandorle · mela, pompelmo, arancia o kiwi al posto della pera."},
+      spuntino:{time:"10:30", items:["2 mele grandi, senza buccia (400 g)","230 g yogurt greco"], alt:"Alternative (dosi raddoppiate): pera, pompelmo, arancia o kiwi al posto della mela · grissini 60 g, crackers integrali 60 g o noci secche 40 g al posto dello yogurt."},
+      pranzo:{time:"13:00",
+        antipasto:["150 g pasta di semola integrale"],
+        secondo:["420 g petto di pollo, senza pelle" + FZ],
+        contorno:["280 g zucchine","30 g parmigiano","2 arance grandi (400 g)"],
+        alt:"Alternative: pane, gnocchi, farro, riso integrale o patate dolci al posto della pasta · tacchino, merluzzo, bovino, legumi, albume, tonno o orata al posto del pollo · le altre verdure e frutta del piano ruotano di giorno in giorno."
+      },
+      merenda:{time:"17:30", items:["2 vasetti yogurt di latte scremato (250 g)","2 pompelmi medi (500 g)"], note:"il frutto va mangiato 60–90 min prima", alt:"Alternative: tacchino, creamy protein, pane di segale o mandorle al posto dello yogurt."},
+      cena:{time:"20:00",
+        secondo:["440 g pesce spada" + FZ],
+        contorno:["300 g pomodori","160 g broccoli"],
+        dessert:["4 kiwi medi (360 g)"],
+        alt:"Alternative: calamaro, pollo, suino, legumi, bovino, uova o fiocchi di latte magro al posto del pesce spada."
+      },
+      defrost:["petto di tacchino, 360 g (pranzo di martedì)","petto di pollo, 420 g (cena di martedì)"]
+    },
+    {
+      name:"Martedì",
+      colazione:{time:"07:30", items:["370 g latte di soia","340 g yogurt greco 0%","52 g fiocchi di avena","30 g burro di arachidi","2 mele grandi, senza buccia (400 g)"]},
+      spuntino:{time:"10:30", items:["4 kiwi medi (360 g)","40 g noci secche"]},
+      pranzo:{time:"13:00",
+        antipasto:["120 g farro"],
+        secondo:["360 g petto di tacchino" + FZ],
+        contorno:["200 g pomodori da insalata","50 g avocado","2 pere grandi, senza buccia (400 g)"]
+      },
+      merenda:{time:"17:30", items:["40 g creamy Protein","2 arance grandi (400 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["420 g petto di pollo, senza pelle" + FZ],
+        contorno:["200 g carote","390 g radicchio rosso"],
+        dessert:["2 mele grandi, senza buccia (400 g)"]
+      },
+      defrost:["merluzzo, 600 g (pranzo di mercoledì)","lonza di suino, 350 g (cena di mercoledì)"]
+    },
+    {
+      name:"Mercoledì",
+      colazione:{time:"07:30", items:["14 fette medie di bresaola","6 fette biscottate integrali (48 g)","30 g mandorle","2 pompelmi medi (500 g)"], note:"bresaola: 1–2 volte a settimana"},
+      spuntino:{time:"10:30", items:["2 arance grandi (400 g)","2 pacchetti crackers integrali (60 g)"]},
+      pranzo:{time:"13:00",
+        antipasto:["300 g gnocchi di patate"],
+        secondo:["600 g merluzzo" + FZ],
+        contorno:["200 g cetrioli","80 g ricotta di vacca","4 kiwi medi (360 g)"]
+      },
+      merenda:{time:"17:30", items:["4 fette petto di tacchino (84 g)" + FZ,"2 pere grandi, senza buccia (400 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["350 g lonza di suino, cruda" + FZ],
+        contorno:["250 g vellutata di verdure"],
+        dessert:["2 arance grandi (400 g)"]
+      },
+      defrost:["tonno fresco, 280 g, se congelato (pranzo di giovedì)","bovino vitellone, 500 g (cena di giovedì)"]
+    },
+    {
+      name:"Giovedì",
+      colazione:{time:"07:30", items:["250 g latte di vacca parzialmente scremato UHT","60 g proteine in polvere","6 fette gallette di riso (48 g)","30 g mandorle","4 kiwi medi (360 g)"]},
+      spuntino:{time:"10:30", items:["2 pere grandi, senza buccia (400 g)","2 porzioni grissini (60 g)"]},
+      pranzo:{time:"13:00",
+        antipasto:["540 g patate dolci"],
+        secondo:["280 g tonno \"fresco\"" + FZ],
+        contorno:["260 g radicchio rosso","10 g olio d'oliva extravergine in più","2 mele grandi, senza buccia (400 g)"]
+      },
+      merenda:{time:"17:30", items:["20 g mandorle","2 pompelmi medi (500 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["500 g bovino, vitellone, tagli magri" + FZ],
+        contorno:["200 g spinaci"],
+        dessert:["2 arance grandi (400 g)"]
+      },
+      defrost:["filetti di orata, 240 g (pranzo di venerdì)","calamaro, 700 g (cena di venerdì)"]
+    },
+    {
+      name:"Venerdì",
+      colazione:{time:"07:30", items:["370 g latte di soia","340 g yogurt greco 0%","80 g pane integrale","30 g burro di arachidi","2 pere grandi, senza buccia (400 g)"]},
+      spuntino:{time:"10:30", items:["2 mele grandi, senza buccia (400 g)","230 g yogurt greco"]},
+      pranzo:{time:"13:00",
+        antipasto:["120 g riso integrale, crudo"],
+        secondo:["240 g orata d'allevamento, filetti" + FZ],
+        contorno:["140 g peperoni","30 g parmigiano","2 arance grandi (400 g)"]
+      },
+      merenda:{time:"17:30", items:["60 g pane di segale","4 kiwi medi (360 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["700 g calamaro" + FZ],
+        contorno:["2 finocchi medi (400 g)"],
+        dessert:["2 pompelmi medi (500 g)"]
+      },
+      defrost:["bovino vitellone, 360 g (pranzo di sabato)"]
+    },
+    {
+      name:"Sabato",
+      colazione:{time:"07:30", items:["12 uova di gallina, albume (360 g)","52 g fiocchi di avena","30 g mandorle","2 arance grandi (400 g)"]},
+      spuntino:{time:"10:30", items:["4 kiwi medi (360 g)","40 g noci secche"]},
+      pranzo:{time:"13:00",
+        antipasto:["200 g pane di grano duro"],
+        secondo:["360 g bovino, vitellone, noce" + FZ],
+        contorno:["150 g zucca gialla","50 g avocado","2 pere grandi, senza buccia (400 g)"]
+      },
+      merenda:{time:"17:30", items:["2 vasetti yogurt di latte scremato (250 g)","2 mele grandi, senza buccia (400 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["8 uova di gallina, intere (400 g)"],
+        contorno:["300 g pomodori da insalata","160 g broccoli"],
+        dessert:["2 pompelmi medi (500 g)"]
+      },
+      defrost:[]
+    },
+    {
+      name:"Domenica",
+      colazione:{time:"07:30", items:["250 g latte di vacca parzialmente scremato UHT","340 g yogurt greco 0%","6 fette biscottate integrali (48 g)","30 g mandorle","4 kiwi medi (360 g)"]},
+      spuntino:{time:"10:30", items:["2 pompelmi medi (500 g)","2 pacchetti crackers integrali (60 g)"]},
+      pranzo:{time:"13:00",
+        antipasto:["150 g pasta di semola integrale"],
+        secondo:["180 g misto legumi e cereali"],
+        contorno:["200 g melanzane","10 g olio d'oliva extravergine in più","2 arance grandi (400 g)"]
+      },
+      merenda:{time:"17:30", items:["40 g creamy Protein","2 mele grandi, senza buccia (400 g)"], note:"il frutto va mangiato 60–90 min prima"},
+      cena:{time:"20:00",
+        secondo:["140 g legumi secchi (in media)"],
+        contorno:["150 g carote","300 g insalata"],
+        dessert:["4 kiwi medi (360 g)"]
+      },
+      defrost:["petto di pollo, 420 g (pranzo di lunedì)","pesce spada, 440 g (cena di lunedì)"]
+    }
+  ];
+
+  const nav = document.getElementById('day-nav');
+  const panels = document.getElementById('day-panels');
+  const todayIdx = (new Date().getDay() + 6) % 7; // 0=lunedì .. 6=domenica
+
+  function mealBlock(time, name, bodyHtml, note, alt){
+    return '<div class="meal"><div class="meal-time">'+time+'</div><div><h3 class="meal-name">'+name+'</h3>'+bodyHtml+
+      (note ? '<div class="meal-note">'+note+'</div>' : '') +
+      (alt ? '<details class="alt"><summary>altre opzioni dal piano</summary><div class="alt-body">'+alt+'</div></details>' : '') +
+      '</div></div>';
+  }
+  function items(list){
+    return '<div class="item-line">'+list.join('</div><div class="item-line">')+'</div>';
+  }
+  function course(label, list){
+    if(!list) return '';
+    return '<div class="course"><div class="course-label">'+label+'</div>'+items(list)+'</div>';
+  }
+
+  days.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.innerHTML = '<span class="day-icon">'+ICONS[DAY_ICON[i]]()+'</span>'+d.name;
+    if(i === todayIdx){
+      const dot = document.createElement('span');
+      dot.className = 'today-dot';
+      btn.appendChild(dot);
+    }
+    btn.addEventListener('click', () => selectDay(i));
+    btn.id = 'nav-'+i;
+    nav.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'day-panel';
+    panel.id = 'panel-'+i;
+    panel.innerHTML =
+      mealBlock(d.colazione.time, 'Colazione', items(d.colazione.items), d.colazione.note, d.colazione.alt) +
+      mealBlock(d.spuntino.time, 'Spuntino di metà mattina', items(d.spuntino.items), d.spuntino.note, d.spuntino.alt) +
+      mealBlock(d.pranzo.time, 'Pranzo', course('Antipasto', d.pranzo.antipasto)+course('Secondo', d.pranzo.secondo)+course('Contorno', d.pranzo.contorno), null, d.pranzo.alt) +
+      mealBlock(d.merenda.time, 'Merenda', items(d.merenda.items), d.merenda.note, d.merenda.alt) +
+      mealBlock(d.cena.time, 'Cena <span class="meal-icon">'+ICONS[DAY_ICON[i]]()+'</span>', course('Secondo', d.cena.secondo)+course('Contorno', d.cena.contorno)+course('Dessert', d.cena.dessert), null, d.cena.alt);
+    panels.appendChild(panel);
+  });
+
+  function selectDay(i){
+    for(let j=0;j<days.length;j++){
+      document.getElementById('nav-'+j).classList.toggle('active', j===i);
+      document.getElementById('panel-'+j).classList.toggle('active', j===i);
+    }
+    const d = days[i];
+    document.getElementById('banner-title').textContent = (i===todayIdx ? 'Stasera' : d.name+' sera') + ' scongela per domani';
+    const bodyEl = document.getElementById('banner-body');
+    if(d.defrost.length){
+      bodyEl.innerHTML = d.defrost.map(x=>'<b>'+x+'</b>').join(' · ');
+    } else {
+      bodyEl.innerHTML = '<span class="banner-empty">Niente da scongelare — domani si cucina solo con uova o legumi.</span>';
+    }
+  }
+
+  selectDay(todayIdx);
+
+  // ---- Lista della spesa (totali settimanali, dosi per 2) ----
+  const SHOPPING_LIST = [
+    { group:"Proteine animali e legumi", items:[
+      ["Petto di pollo, senza pelle","840 g"],
+      ["Petto di tacchino","444 g"],
+      ["Pesce spada","440 g"],
+      ["Merluzzo","600 g"],
+      ["Lonza di suino","350 g"],
+      ["Tonno fresco","280 g"],
+      ["Bovino, vitellone, tagli magri","500 g"],
+      ["Filetti di orata","240 g"],
+      ["Calamaro","700 g"],
+      ["Bovino, vitellone, noce","360 g"],
+      ["Bresaola","14 fette medie"],
+      ["Misto legumi e cereali (pronto)","180 g"],
+      ["Legumi secchi","140 g"]
+    ]},
+    { group:"Uova e latticini", items:[
+      ["Uova (intere)","12 (600 g)"],
+      ["Uova (per albume)","12 (360 g di albume)"],
+      ["Latte di vacca parz. scremato UHT","750 g"],
+      ["Latte di soia","740 g"],
+      ["Yogurt greco","460 g"],
+      ["Yogurt greco 0%","1020 g"],
+      ["Yogurt di latte scremato (vasetti)","500 g"],
+      ["Ricotta di vacca","80 g"],
+      ["Parmigiano","60 g"]
+    ]},
+    { group:"Pane, cereali e amidi", items:[
+      ["Pane integrale","160 g"],
+      ["Pane di grano duro","200 g"],
+      ["Pane di segale","60 g"],
+      ["Pasta di semola integrale","300 g"],
+      ["Farro","120 g"],
+      ["Riso integrale, crudo","120 g"],
+      ["Gnocchi di patate","300 g"],
+      ["Patate dolci","540 g"],
+      ["Fette biscottate integrali","12 (96 g)"],
+      ["Gallette di riso","6 fette (48 g)"],
+      ["Fiocchi di avena","104 g"],
+      ["Grissini","60 g"],
+      ["Crackers integrali","4 pacchetti (120 g)"],
+      ["Proteine in polvere","60 g"],
+      ["Creamy Protein","80 g"]
+    ]},
+    { group:"Frutta fresca", items:[
+      ["Pere grandi","12 (2400 g)"],
+      ["Mele grandi","14 (2800 g)"],
+      ["Arance grandi","16 (3200 g)"],
+      ["Pompelmi medi","12 (3000 g)"],
+      ["Kiwi medi","32 (2880 g)"]
+    ]},
+    { group:"Verdura", items:[
+      ["Zucchine","280 g"],
+      ["Pomodori (da insalata)","800 g"],
+      ["Broccoli","320 g"],
+      ["Carote","350 g"],
+      ["Radicchio rosso","650 g"],
+      ["Cetrioli","200 g"],
+      ["Spinaci","200 g"],
+      ["Peperoni","140 g"],
+      ["Finocchi medi","2 (400 g)"],
+      ["Zucca gialla","150 g"],
+      ["Melanzane","200 g"],
+      ["Insalata mista","300 g"],
+      ["Vellutata di verdure (pronta)","250 g"]
+    ]},
+    { group:"Frutta secca e condimenti", items:[
+      ["Mandorle","170 g"],
+      ["Burro di arachidi","60 g"],
+      ["Noci secche","80 g"],
+      ["Avocado","100 g"],
+      ["Olio d'oliva extravergine (in più)","20 g"]
+    ]}
+  ];
+
+  const GROUP_ICON = {
+    "Proteine animali e legumi":"redmeat",
+    "Uova e latticini":"egg",
+    "Pane, cereali e amidi":"bread",
+    "Frutta fresca":"fruit",
+    "Verdura":"veg",
+    "Frutta secca e condimenti":"oil"
+  };
+  const shoppingRoot = document.getElementById('shopping-groups');
+  SHOPPING_LIST.forEach((g, gi) => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'shop-group';
+    const h = document.createElement('h3');
+    h.innerHTML = '<span class="cat-icon">'+ICONS[GROUP_ICON[g.group] || 'veg']()+'</span>'+g.group;
+    groupEl.appendChild(h);
+    const list = document.createElement('div');
+    list.className = 'shop-list';
+    g.items.forEach(([name, qty], ii) => {
+      const row = document.createElement('div');
+      row.className = 'shop-row';
+      const id = 'shop-'+gi+'-'+ii;
+      row.innerHTML = '<label for="'+id+'"><input type="checkbox" id="'+id+'"><span>'+name+'</span></label><span class="qty">'+qty+'</span>';
+      const cb = row.querySelector('input');
+      cb.addEventListener('change', () => row.classList.toggle('checked', cb.checked));
+      list.appendChild(row);
+    });
+    groupEl.appendChild(list);
+    shoppingRoot.appendChild(groupEl);
+  });
+
+  // ---- Tab principali ----
+  document.getElementById('main-tabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-section]');
+    if(!btn) return;
+    document.querySelectorAll('#main-tabs button').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'section-'+btn.dataset.section));
+  });
+
+  // ---- Upload nuovo piano ----
+  const upZone = document.getElementById('upload-zone');
+  const upInput = document.getElementById('upload-input');
+  const upStatus = document.getElementById('upload-status');
+
+  function showUploaded(file){
+    upStatus.classList.add('show');
+    upStatus.innerHTML = 'File ricevuto: <b>'+file.name+'</b> ('+Math.round(file.size/1024)+' KB). Ora mandalo in chat a Milele per aggiornare il menu.';
+  }
+  upZone.addEventListener('click', () => upInput.click());
+  upZone.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') upInput.click(); });
+  upInput.addEventListener('change', () => { if(upInput.files[0]) showUploaded(upInput.files[0]); });
+  ['dragenter','dragover'].forEach(evt => upZone.addEventListener(evt, (e) => { e.preventDefault(); upZone.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(evt => upZone.addEventListener(evt, (e) => { e.preventDefault(); upZone.classList.remove('drag'); }));
+  upZone.addEventListener('drop', (e) => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(file) showUploaded(file);
+  });
+</script>
