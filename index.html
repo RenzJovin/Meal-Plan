@@ -70,6 +70,36 @@
     gap:6px;
     margin-bottom:20px;
   }
+  .header-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .people-toggle{
+    display:flex;
+    gap:3px;
+    background:var(--surface-alt);
+    border-radius:999px;
+    padding:3px;
+    flex:none;
+  }
+  .people-toggle button{
+    width:34px;
+    height:34px;
+    border-radius:999px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    font-family:inherit;
+    font-weight:700;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .people-toggle button.active{
+    background:var(--accent);
+    color:#fff;
+  }
   .eyebrow{
     font-size:12.5px;
     letter-spacing:0.08em;
@@ -418,10 +448,18 @@
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Piano alimentare &middot; settimana tipo &middot; porzioni per 2</div>
-    <h1>Milele</h1>
+    <div class="header-row">
+      <div>
+        <div class="eyebrow" id="eyebrow">Piano alimentare &middot; settimana tipo &middot; porzioni per 2</div>
+        <h1>Milele</h1>
+      </div>
+      <div class="people-toggle" id="people-toggle" role="group" aria-label="Porzioni per persone">
+        <button type="button" data-people="1">1</button>
+        <button type="button" data-people="2" class="active">2</button>
+      </div>
+    </div>
     <div class="client-row">
-      <span>Porzioni raddoppiate rispetto al piano originale, per due persone</span>
+      <span id="portion-note">Porzioni raddoppiate rispetto al piano originale, per due persone</span>
     </div>
   </header>
 
@@ -445,7 +483,7 @@
   </div>
 
   <div class="section" id="section-shopping">
-    <div class="shop-intro">Dosi già calcolate per 2 persone, sommando tutti e 7 i giorni del menu fisso (non includono le "altre opzioni" alternative). Spunta man mano che riempi il carrello — le spunte si azzerano quando ricarichi la pagina.</div>
+    <div class="shop-intro" id="shop-intro">Dosi già calcolate per 2 persone, sommando tutti e 7 i giorni del menu fisso (non includono le "altre opzioni" alternative). Spunta man mano che riempi il carrello — le spunte si azzerano quando ricarichi la pagina.</div>
     <div id="shopping-groups"></div>
   </div>
 
@@ -487,8 +525,8 @@
   const days = [
     {
       name:"Lunedì",
-      colazione:{time:"07:30", items:["250 g latte di vacca parzialmente scremato UHT","4 uova di gallina intere (200 g)","80 g pane 5 cereali","30 g mandorle","2 pere grandi, senza buccia (400 g)"], alt:"Altre opzioni colazione dal piano (dosi raddoppiate per 2): latte di soia 370 g · bresaola 14 fette (1–2 volte/sett.) · proteine in polvere 60 g · albume 360 g · yogurt 340 g · gallette di riso, fette biscottate o fiocchi d'avena al posto del pane · burro di arachidi al posto delle mandorle · mela, arancia o kiwi al posto della pera."},
-      spuntino:{time:"10:30", items:["2 mele grandi, senza buccia (400 g)","230 g yogurt"], alt:"Alternative (dosi raddoppiate): pera, arancia o kiwi al posto della mela · grissini 60 g, crackers integrali 60 g o noci secche 40 g al posto dello yogurt."},
+      colazione:{time:"07:30", items:["250 g latte di vacca parzialmente scremato UHT","4 uova di gallina intere (200 g)","80 g pane 5 cereali","30 g mandorle","2 pere grandi, senza buccia (400 g)"], alt:"Altre opzioni colazione dal piano: latte di soia 370 g · bresaola 14 fette (1–2 volte/sett.) · proteine in polvere 60 g · albume 360 g · yogurt 340 g · gallette di riso, fette biscottate o fiocchi d'avena al posto del pane · burro di arachidi al posto delle mandorle · mela, arancia o kiwi al posto della pera."},
+      spuntino:{time:"10:30", items:["2 mele grandi, senza buccia (400 g)","230 g yogurt"], alt:"Alternative: pera, arancia o kiwi al posto della mela · grissini 60 g, crackers integrali 60 g o noci secche 40 g al posto dello yogurt."},
       pranzo:{time:"13:00",
         antipasto:["150 g pasta di semola integrale"],
         secondo:["420 g petto di pollo, senza pelle" + FZ],
@@ -612,45 +650,82 @@
   const panels = document.getElementById('day-panels');
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=lunedì .. 6=domenica
 
+  // ---- Porzioni: tutti i dati sopra sono scritti per 2 persone. scaleStr() li dimezza al volo per 1. ----
+  let PEOPLE = 2;
+  let currentDay = todayIdx;
+  const SINGOLARI = [
+    [/\bpere grandi\b/, 'pera grande'],
+    [/\bmele grandi\b/, 'mela grande'],
+    [/\barance grandi\b/, 'arancia grande'],
+    [/\bpacchetti crackers integrali\b/, 'pacchetto crackers integrali'],
+    [/\bporzioni grissini\b/, 'porzione grissini']
+  ];
+  function scaleStr(str, factor){
+    if(factor === 1 || !str) return str;
+    // dimezza ogni quantità in grammi ovunque compaia nella stringa
+    str = str.replace(/(\d+(?:[.,]\d+)?)\s*g\b/g, (m, n) => (parseFloat(n.replace(',','.')) * factor) + ' g');
+    // dimezza l'eventuale numero di unità in testa alla stringa (non seguito da "g": quello è già gestito sopra)
+    const lead = str.match(/^(\d+)/);
+    if(lead && !/^\s*g\b/.test(str.slice(lead[1].length))){
+      const orig = parseInt(lead[1], 10);
+      const scaled = orig * factor;
+      str = scaled + str.slice(lead[1].length);
+      if(orig === 2 && factor === 0.5){
+        for(const [re, rep] of SINGOLARI) str = str.replace(re, rep);
+      }
+    }
+    return str;
+  }
+  function scaleList(list){
+    const f = PEOPLE === 1 ? 0.5 : 1;
+    return list.map(s => scaleStr(s, f));
+  }
+
   function mealBlock(time, name, bodyHtml, note, alt){
     return '<div class="meal"><div class="meal-time">'+time+'</div><div><h3 class="meal-name">'+name+'</h3>'+bodyHtml+
       (note ? '<div class="meal-note">'+note+'</div>' : '') +
-      (alt ? '<details class="alt"><summary>altre opzioni dal piano</summary><div class="alt-body">'+alt+'</div></details>' : '') +
+      (alt ? '<details class="alt"><summary>altre opzioni dal piano</summary><div class="alt-body">'+scaleStr(alt, PEOPLE===1?0.5:1)+'</div></details>' : '') +
       '</div></div>';
   }
   function items(list){
-    return '<div class="item-line">'+list.join('</div><div class="item-line">')+'</div>';
+    return '<div class="item-line">'+scaleList(list).join('</div><div class="item-line">')+'</div>';
   }
   function course(label, list){
     if(!list) return '';
     return '<div class="course"><div class="course-label">'+label+'</div>'+items(list)+'</div>';
   }
 
-  days.forEach((d, i) => {
-    const btn = document.createElement('button');
-    btn.innerHTML = '<span class="day-icon">'+ICONS[DAY_ICON[i]]()+'</span>'+d.name;
-    if(i === todayIdx){
-      const dot = document.createElement('span');
-      dot.className = 'today-dot';
-      btn.appendChild(dot);
-    }
-    btn.addEventListener('click', () => selectDay(i));
-    btn.id = 'nav-'+i;
-    nav.appendChild(btn);
+  function renderDays(){
+    nav.innerHTML = '';
+    panels.innerHTML = '';
+    days.forEach((d, i) => {
+      const btn = document.createElement('button');
+      btn.innerHTML = '<span class="day-icon">'+ICONS[DAY_ICON[i]]()+'</span>'+d.name;
+      if(i === todayIdx){
+        const dot = document.createElement('span');
+        dot.className = 'today-dot';
+        btn.appendChild(dot);
+      }
+      btn.addEventListener('click', () => selectDay(i));
+      btn.id = 'nav-'+i;
+      nav.appendChild(btn);
 
-    const panel = document.createElement('div');
-    panel.className = 'day-panel';
-    panel.id = 'panel-'+i;
-    panel.innerHTML =
-      mealBlock(d.colazione.time, 'Colazione', items(d.colazione.items), d.colazione.note, d.colazione.alt) +
-      mealBlock(d.spuntino.time, 'Spuntino di metà mattina', items(d.spuntino.items), d.spuntino.note, d.spuntino.alt) +
-      mealBlock(d.pranzo.time, 'Pranzo', course('Antipasto', d.pranzo.antipasto)+course('Secondo', d.pranzo.secondo)+course('Contorno', d.pranzo.contorno), null, d.pranzo.alt) +
-      mealBlock(d.merenda.time, 'Merenda', items(d.merenda.items), d.merenda.note, d.merenda.alt) +
-      mealBlock(d.cena.time, 'Cena <span class="meal-icon">'+ICONS[DAY_ICON[i]]()+'</span>', course('Secondo', d.cena.secondo)+course('Contorno', d.cena.contorno)+course('Dessert', d.cena.dessert), null, d.cena.alt);
-    panels.appendChild(panel);
-  });
+      const panel = document.createElement('div');
+      panel.className = 'day-panel';
+      panel.id = 'panel-'+i;
+      panel.innerHTML =
+        mealBlock(d.colazione.time, 'Colazione', items(d.colazione.items), d.colazione.note, d.colazione.alt) +
+        mealBlock(d.spuntino.time, 'Spuntino di metà mattina', items(d.spuntino.items), d.spuntino.note, d.spuntino.alt) +
+        mealBlock(d.pranzo.time, 'Pranzo', course('Antipasto', d.pranzo.antipasto)+course('Secondo', d.pranzo.secondo)+course('Contorno', d.pranzo.contorno), null, d.pranzo.alt) +
+        mealBlock(d.merenda.time, 'Merenda', items(d.merenda.items), d.merenda.note, d.merenda.alt) +
+        mealBlock(d.cena.time, 'Cena <span class="meal-icon">'+ICONS[DAY_ICON[i]]()+'</span>', course('Secondo', d.cena.secondo)+course('Contorno', d.cena.contorno)+course('Dessert', d.cena.dessert), null, d.cena.alt);
+      panels.appendChild(panel);
+    });
+    selectDay(currentDay);
+  }
 
   function selectDay(i){
+    currentDay = i;
     for(let j=0;j<days.length;j++){
       document.getElementById('nav-'+j).classList.toggle('active', j===i);
       document.getElementById('panel-'+j).classList.toggle('active', j===i);
@@ -659,13 +734,32 @@
     document.getElementById('banner-title').textContent = (i===todayIdx ? 'Stasera' : d.name+' sera') + ' scongela per domani';
     const bodyEl = document.getElementById('banner-body');
     if(d.defrost.length){
-      bodyEl.innerHTML = d.defrost.map(x=>'<b>'+x+'</b>').join(' · ');
+      bodyEl.innerHTML = scaleList(d.defrost).map(x=>'<b>'+x+'</b>').join(' · ');
     } else {
       bodyEl.innerHTML = '<span class="banner-empty">Niente da scongelare — domani si cucina solo con uova o legumi.</span>';
     }
   }
 
-  selectDay(todayIdx);
+  function updateHeaderTexts(){
+    document.getElementById('eyebrow').textContent = 'Piano alimentare · settimana tipo · porzioni per '+PEOPLE;
+    document.getElementById('portion-note').textContent = PEOPLE === 2
+      ? 'Porzioni raddoppiate rispetto al piano originale, per due persone'
+      : 'Porzioni originali del piano, per una persona';
+    document.getElementById('shop-intro').textContent = 'Dosi già calcolate per '+PEOPLE+' person'+(PEOPLE===1?'a':'e')+', sommando tutti e 7 i giorni del menu fisso (non includono le "altre opzioni" alternative). Spunta man mano che riempi il carrello — le spunte si azzerano quando ricarichi la pagina.';
+  }
+
+  document.getElementById('people-toggle').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-people]');
+    if(!btn) return;
+    PEOPLE = parseInt(btn.dataset.people, 10);
+    document.querySelectorAll('#people-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+    updateHeaderTexts();
+    renderDays();
+    renderShopping();
+  });
+
+  updateHeaderTexts();
+  renderDays();
 
   // ---- Lista della spesa (totali settimanali, dosi per 2) ----
   const SHOPPING_LIST = [
@@ -741,26 +835,31 @@
     "Frutta secca e condimenti":"oil"
   };
   const shoppingRoot = document.getElementById('shopping-groups');
-  SHOPPING_LIST.forEach((g, gi) => {
-    const groupEl = document.createElement('div');
-    groupEl.className = 'shop-group';
-    const h = document.createElement('h3');
-    h.innerHTML = '<span class="cat-icon">'+ICONS[GROUP_ICON[g.group] || 'veg']()+'</span>'+g.group;
-    groupEl.appendChild(h);
-    const list = document.createElement('div');
-    list.className = 'shop-list';
-    g.items.forEach(([name, qty], ii) => {
-      const row = document.createElement('div');
-      row.className = 'shop-row';
-      const id = 'shop-'+gi+'-'+ii;
-      row.innerHTML = '<label for="'+id+'"><input type="checkbox" id="'+id+'"><span>'+name+'</span></label><span class="qty">'+qty+'</span>';
-      const cb = row.querySelector('input');
-      cb.addEventListener('change', () => row.classList.toggle('checked', cb.checked));
-      list.appendChild(row);
+  function renderShopping(){
+    const f = PEOPLE === 1 ? 0.5 : 1;
+    shoppingRoot.innerHTML = '';
+    SHOPPING_LIST.forEach((g, gi) => {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'shop-group';
+      const h = document.createElement('h3');
+      h.innerHTML = '<span class="cat-icon">'+ICONS[GROUP_ICON[g.group] || 'veg']()+'</span>'+g.group;
+      groupEl.appendChild(h);
+      const list = document.createElement('div');
+      list.className = 'shop-list';
+      g.items.forEach(([name, qty], ii) => {
+        const row = document.createElement('div');
+        row.className = 'shop-row';
+        const id = 'shop-'+gi+'-'+ii;
+        row.innerHTML = '<label for="'+id+'"><input type="checkbox" id="'+id+'"><span>'+name+'</span></label><span class="qty">'+scaleStr(qty, f)+'</span>';
+        const cb = row.querySelector('input');
+        cb.addEventListener('change', () => row.classList.toggle('checked', cb.checked));
+        list.appendChild(row);
+      });
+      groupEl.appendChild(list);
+      shoppingRoot.appendChild(groupEl);
     });
-    groupEl.appendChild(list);
-    shoppingRoot.appendChild(groupEl);
-  });
+  }
+  renderShopping();
 
   // ---- Tab principali ----
   document.getElementById('main-tabs').addEventListener('click', (e) => {
